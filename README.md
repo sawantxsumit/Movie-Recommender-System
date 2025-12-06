@@ -53,38 +53,42 @@ Follow these steps to set up and run the project locally.
 
 
  2. **Create and Activate Virtual Environment**
-```bash
+```
 python -m venv venv
+```
 On Windows:
+```
 .\venv\Scripts\activate
-
+```
 On macOS/Linux:
+```
 source venv/bin/activate
 ```
 
 3.  **Install dependencies:**
-    ```bash
+    ```
     pip install -r requirements.txt
     ```
 
 4. **Configure API Key (Crucial!)**
 For the app to fetch movie posters and details, you must set your TMDB API Key as an environment variable.
 
-```bash
 Linux/macOS:
+```
 export TMDB_API_KEY='YOUR_TMDB_API_KEY'
+```
 
 Windows (Command Prompt):
+```
 set TMDB_API_KEY=YOUR_TMDB_API_KEY
 ```
 
 5. **Run the Application**
-```
 Start the Flask development server:
-python app.py
-
-The application will be available at: http://127.0.0.1:5000/
 ```
+python app.py
+```
+The application will be available at: http://127.0.0.1:5000/
 
 ## 🛠️ Deployment
 The application is deployed on Render using the configuration below:
