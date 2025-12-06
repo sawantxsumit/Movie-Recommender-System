@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Movie Recommender</title>
+  <link rel="stylesheet" href="style2.css" />
+    
+  </head>
+  <body>
+    <div class="heading">
+        <h1>Movie Recommendation System</h1>
+    </div>
+    <div class="container">
+      <div class="controls">
+        <div class="left">
+          <label for="movie">Search a movie</label>
+          <select id="movie">
+            <!-- These options should be populated server-side or via JS fetch of /movies -->
+            <option>Pirates of the Caribbean: At World's End</option>
+            <option>Pirates of the Caribbean: Dead Man's Chest</option>
+            <option>The Dark Knight</option>
+            <option>Inception</option>
+            <option>Interstellar</option>
+          </select>
+        </div>
+
+        <div style="width: 150px">
+          <label for="num">Number</label>
+          <div class="num">
+            <button id="dec">-</button>
+            <input
+              id="num"
+              type="number"
+              value="5"
+              min="1"
+              max="20"
+              style="width: 56px; text-align: center"
+            />
+            <button id="inc">+</button>
+          </div>
+        </div>
+
+        <div>
+          <label style="visibility: hidden">&nbsp;</label>
+          <button class="btn" id="recommend">Recommend</button>
+        </div>
+      </div>
+
+      <div class="results">
+        <h3 id="heading">
+          Recommendations for
+          <span id="selTitle">Pirates of the Caribbean: At World's End</span>
+        </h3>
+        <div class="cards" id="cards">
+          <!-- JS will inject cards here -->
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // small helper UI + fetch logic
+      const movieSelect = document.getElementById("movie");
+      const numInput = document.getElementById("num");
+      const dec = document.getElementById("dec");
+      const inc = document.getElementById("inc");
+      const btn = document.getElementById("recommend");
+      const cards = document.getElementById("cards");
+      const headingTitle = document.getElementById("selTitle");
+
+      dec.addEventListener("click", () => {
+        numInput.value = Math.max(1, Number(numInput.value) - 1);
+      });
+      inc.addEventListener("click", () => {
+        numInput.value = Math.min(20, Number(numInput.value) + 1);
+      });
+
+      btn.addEventListener("click", async () => {
+        const title = movieSelect.value;
+        const n = Number(numInput.value);
+        headingTitle.textContent = title;
+        // clear
+        cards.innerHTML =
+          '<div class="muted" style="padding:12px">Loading...</div>';
+
+        try {
+          // call your Flask backend endpoint /predict which returns JSON {recommendations:[{title,poster_url}]}
+          const res = await fetch("/recommend", {
+            method: "POST",
+            <!-- headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title, n }), -->
+          });
+          if (!res.ok) throw new Error("Server error " + res.status);
+          const data = await res.json();
+          <!-- renderRecommendations(data.recommendations || []); -->
+        } catch (err) {
+          cards.innerHTML = `<div class="muted" style="padding:12px">Error: ${err.message}</div>`;
+        }
+      });
+
+      function renderRecommendations(list) {
+        if (!list.length) {
+          cards.innerHTML =
+            '<div class="muted" style="padding:12px">No recommendations found.</div>';
+          return;
+        }
+        cards.innerHTML = "";
+        list.forEach((item) => {
+          const c = document.createElement("div");
+          c.className = "card";
+          const poster = document.createElement("img");
+          poster.className = "poster";
+          // poster URL expected in item.poster or fallback to a placeholder
+          poster.src =
+            item.poster ||
+            "https://via.placeholder.com/300x450?text=" +
+              encodeURIComponent(item.title);
+          poster.alt = item.title;
+          const t = document.createElement("div");
+          t.className = "title";
+          t.textContent = item.title;
+          c.appendChild(poster);
+          c.appendChild(t);
+          cards.appendChild(c);
+        });
+      }
+
+      // Optional: auto-load default recommendations on page load
+      window.addEventListener("load", () => btn.click());
+    </script>
+  </body>
+</html>

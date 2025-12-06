@@ -1,0 +1,286 @@
+/* GLOBAL RESET & BASE STYLES */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Color Palette */
+  --color-dark-bg: #10141a; /* Dark Navy/Charcoal background */
+  --color-surface: #1a202c; /* Slightly lighter card/section background */
+  --color-border: #2d3748; /* Subtle borders/separators */
+  --color-text-primary: #e2e8f0; /* Light text */
+  --color-text-secondary: #a0aec0; /* Subdued text */
+  --color-accent-primary: #e50914; /* Netflix Red / Primary CTA */
+  --color-accent-hover: #c4040d;
+}
+
+body {
+  font-family: 'Inter', 'Roboto', system-ui, sans-serif; /* Modern, clean font stack */
+  background: var(--color-dark-bg);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+}
+
+/* LAYOUT */
+.main {
+  max-width: 1200px; /* Slightly wider for more content */
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem; /* More vertical padding */
+}
+
+/* HIDE DEFAULT SCROLLBARS BUT ALLOW SCROLLING */
+.cards-grid {
+  /* Use for scrollable sections in a full UI, though here it's a grid */
+  scrollbar-width: none; /* Firefox */
+}
+
+.cards-grid::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+
+/* --- HEADER / MAIN HEADING --- */
+
+/* Replicating a simple header look */
+.main-heading {
+  text-align: left; /* Aligned left, like a logo/title */
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 2rem;
+  color: #f7fafc; /* Brighter heading color */
+  border-bottom: 2px solid var(--color-accent-primary);
+  display: inline-block;
+  padding-bottom: 0.25rem;
+}
+
+/* --- SEARCH CARD (INPUT AREA) --- */
+.search-card {
+  background: var(--color-surface);
+  border-radius: 0.75rem;
+  padding: 1.5rem 2rem;
+  border: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5rem; /* Increased gap */
+  flex-wrap: wrap;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+label {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  margin-left: 0.25rem;
+}
+
+.text-input,
+.number-input {
+  padding: 0.9rem 1.1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-dark-bg);
+  color: var(--color-text-primary);
+  transition: all 0.2s;
+}
+
+.text-input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.text-input:focus,
+.number-input:focus {
+  border-color: var(--color-accent-primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.5);
+}
+
+/* --- NUMBER CONTROL --- */
+.number-control {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem; /* Reduced gap for a tighter look */
+}
+
+.number-input {
+    text-align: center;
+    max-width: 60px; /* Small fixed width for number input */
+    padding: 0.9rem 0.5rem;
+}
+
+.counter-btn {
+  padding: 0.8rem 1rem;
+  background: var(--color-dark-bg);
+  color: var(--color-text-primary);
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: 600;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.counter-btn:hover {
+  background: var(--color-border);
+  border-color: var(--color-accent-primary);
+}
+
+/* --- PRIMARY BUTTON --- */
+.btn-primary {
+  padding: 0.9rem 1.6rem;
+  border-radius: 0.5rem;
+  background: var(--color-accent-primary);
+  color: #f7fafc;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  font-weight: 600;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-primary:hover {
+  background: var(--color-accent-hover);
+  transform: translateY(-1px);
+}
+
+
+/* --- RECOMMENDATION SECTION --- */
+.recommendations {
+  margin-top: 3rem;
+  padding: 1.5rem 0;
+}
+
+.reco-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--color-text-primary);
+}
+
+.reco-title span {
+  color: var(--color-accent-primary); /* Use primary accent color */
+}
+
+/* --- MOVIE GRID --- */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Responsive grid */
+  gap: 1.5rem;
+}
+
+/* --- MOVIE CARD --- */
+.movie-card {
+  cursor: pointer;
+  background: var(--color-surface); /* Card background */
+  border-radius: 0.75rem;
+  border: 1px solid transparent; /* Start with transparent border */
+  padding: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform 200ms ease-out, box-shadow 200ms ease-out, border-color 200ms ease-out, background 200ms ease-out;
+}
+
+.movie-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.75);
+  border-color: var(--color-accent-primary); /* Highlight on hover */
+  background: #252b36; /* Slightly darker hover background */
+}
+
+/* --- POSTER --- */
+.poster-wrapper {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: 0.5rem; /* Slightly smaller radius for poster inside card */
+  overflow: hidden;
+  background: var(--color-dark-bg);
+  border: none;
+  display: flex;
+}
+
+.poster-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* --- TITLE --- */
+.movie-title {
+  margin-top: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-bottom: 0.25rem;
+}
+
+/* --- EMPTY / ERROR STATES --- */
+.recommendations .empty,
+.recommendations .error {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-top: 2rem;
+}
+
+.recommendations .empty {
+  background: rgba(160, 174, 192, 0.1);
+  color: var(--color-text-secondary);
+  border: 1px dashed var(--color-border);
+}
+
+.recommendations .error {
+  background: rgba(229, 9, 20, 0.15);
+  color: #f87979;
+  border: 1px solid var(--color-accent-primary);
+}
+
+/* --- RESPONSIVE TWEAKS --- */
+@media (max-width: 900px) {
+  .cards-grid {
+    /* Use auto-fit above, but here we adjust the min size */
+  }
+}
+
+@media (max-width: 768px) {
+    .search-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .field-group {
+        min-width: 100%;
+    }
+    .btn-primary {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+    .main-heading {
+        text-align: center;
+    }
+}
+
+@media (max-width: 500px) {
+    .main {
+        padding: 2rem 1rem;
+    }
+    .cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 1rem;
+    }
+}
