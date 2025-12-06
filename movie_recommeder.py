@@ -10,7 +10,13 @@ def recommend_top10(movie: str):
     This function returns titles and detailed info for 10 similar movies.
     '''
     try:
-        movie_index = movies[movies['title'] == movie].index[0]
+        mask = movies['title'].str.lower() == movie.lower()
+        
+        # Check if movie exists
+        if not mask.any():
+            return [], []
+            
+        movie_index = movies[mask].index[0]
         distances = similarity[movie_index]
         movies_list = sorted(list(enumerate(distances)), reverse=True, key=lambda x: x[1])[1:11]
         
@@ -21,10 +27,8 @@ def recommend_top10(movie: str):
             movie_row = movies.iloc[i[0]]
             movie_id = movie_row.movie_id
             
-            # Add Title
             recommended_titles.append(movie_row.title)
             
-            # Fetch ALL details from API using the updated function
             details = fetch_movie_details(movie_id)
             recommended_details.append(details)
 
@@ -44,19 +48,15 @@ def fetch_movie_details(movie_id):
     if response.status_code == 200:
         data = response.json()
         
-        # 1. Poster Path
         poster_url = None
         if 'poster_path' in data and data['poster_path']:
             poster_url = f"https://image.tmdb.org/t/p/w500/{data['poster_path']}"
             
-        # 2. Genres (Extract names and join them)
         genres = [g['name'] for g in data.get('genres', [])][:3] # Limit to top 3
         
-        # 3. Runtime (Convert minutes to Xh Ym)
         runtime_min = data.get('runtime', 0)
         runtime_str = f"{runtime_min // 60}h {runtime_min % 60}m" if runtime_min else "N/A"
 
-        # 4. Release Date (Year only)
         date = data.get('release_date', 'N/A')
         year = date.split('-')[0] if date else 'N/A'
 

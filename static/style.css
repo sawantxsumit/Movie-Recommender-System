@@ -18,9 +18,15 @@
 
 body {
   font-family: 'Inter', 'Roboto', system-ui, sans-serif; 
-  background: var(--color-dark-bg);
-  color: var(--color-text-primary);
-  line-height: 1.6;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/static/bg-image.png');
+
+  background-size: cover;       
+  background-position: center;  /* Centers the image */
+  background-repeat: no-repeat; /* Prevents tiling */
+  background-attachment:fixed;
+  color: white; 
+  margin: 0;
+  /* font-family: sans-serif; */
 }
 
 /* LAYOUT */

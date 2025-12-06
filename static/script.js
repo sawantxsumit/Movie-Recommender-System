@@ -1,12 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // --- 1. DOM Elements ---
   const movieInput = document.getElementById("movie-input");
   const numInput = document.getElementById("movie-count");
   const decrease = document.getElementById("decrease");
   const increase = document.getElementById("increase");
   const btn = document.getElementById("recommend");
   
-  // The main title heading
+  // The main heading
   const recoTitle = document.querySelector(".reco-title");
   
   // The grid
@@ -17,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  /* -------------------- MOVIE LIST / DATALIST -------------------- */
+  /* MOVIE LIST */
   const movieNames = Array.isArray(window.MOVIE_NAMES) ? window.MOVIE_NAMES : [];
   const datalist = document.getElementById("movies");
 
@@ -30,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* -------------------- COUNTER BUTTONS -------------------- */
+  /* No. of recommendation buttons */
   if (decrease) {
     decrease.addEventListener("click", () => {
       numInput.value = Math.max(
@@ -49,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* -------------------- API CALL -------------------- */
+  /* API CALL  */
   async function askRecommend() {
     const movie = (movieInput.value || movieInput.placeholder || "").trim();
     if (!movie) {
@@ -80,11 +79,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* -------------------- MODAL ELEMENTS -------------------- */
+  /* MODAL ELEMENTS  */
   const modal = document.getElementById("movie-modal");
   const closeModal = document.querySelector(".close-modal");
 
-  // Elements to populate
+  // Elements
   const modalImg = document.getElementById("modal-img");
   const modalTitle = document.getElementById("modal-title");
   const modalDesc = document.getElementById("modal-desc");
@@ -101,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === modal) { modal.style.display = "none"; }
   };
 
-  /* -------------------- RENDERING -------------------- */
+  /* RENDERING  */
   const SVG_FALLBACK =
     "data:image/svg+xml;utf8," +
     encodeURIComponent(
@@ -135,10 +134,9 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderRecommendations(items, movieName) {
     clearGrid();
 
-    // 1. RESTORE TITLE STRUCTURE
+    // RESTORE TITLE STRUCTURE
     if (recoTitle) {
         recoTitle.classList.remove("pulse");
-        // We inject the <span> back into the H2 so styling is preserved
         recoTitle.innerHTML = `Recommendations for <span>${movieName}</span>`;
     }
 
@@ -157,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
         modalDesc.textContent = it.overview || "No description available.";
         modalImg.src = it.poster || SVG_FALLBACK;
         
-        // 2. Fill Badges (New API Data)
+        // 2. Fill Badges 
         modalRating.textContent = `★ ${it.rating || 'N/A'}`;
         modalDate.textContent = it.date || 'N/A';
         modalRuntime.textContent = it.runtime || 'N/A';
@@ -167,7 +165,6 @@ document.addEventListener("DOMContentLoaded", () => {
         modal.style.display = "block";
       });
 
-      // --- CREATE CARD CONTENT ---
       const posterWrap = document.createElement("div");
       posterWrap.className = "poster-wrapper";
 
@@ -190,13 +187,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* -------------------- BUTTON CLICK LOGIC -------------------- */
+  /*  BUTTON CLICK LOGIC  */
   btn.addEventListener("click", async () => {
     // 1. Button Loading State
     btn.disabled = true;
     btn.innerHTML = '<span class="loader"></span>'; 
     
-    // 2. Title Loading State (REPLACES "Recommendations for...")
+    // 2. (REPLACES "Recommendations for...")
     if (recoTitle) {
         recoTitle.textContent = "Looking for recommendations...";
         recoTitle.classList.add("pulse");

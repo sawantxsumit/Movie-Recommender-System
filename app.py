@@ -5,6 +5,7 @@ from movie_recommeder import recommend_top10
 app= Flask(__name__)
 
 movies_list=pickle.load(open('model/movies.pkl','rb'))
+movie_names=pickle.load(open('model/movies.pkl','rb'))
 MOVIE_NAMES = movies_list['title'].tolist()
 print(len(MOVIE_NAMES))
 
