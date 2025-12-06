@@ -1,12 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // --- 1. DOM Elements ---
   const movieInput = document.getElementById("movie-input");
   const numInput = document.getElementById("movie-count");
   const decrease = document.getElementById("decrease");
   const increase = document.getElementById("increase");
   const btn = document.getElementById("recommend");
-
-  // header span + grid container
-  const recoTitleSpan = document.querySelector(".reco-title span");
+  
+  // The main title heading
+  const recoTitle = document.querySelector(".reco-title");
+  
+  // The grid
   const grid = document.getElementById("cards-grid");
 
   if (!movieInput || !numInput || !btn || !grid) {
@@ -15,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* -------------------- MOVIE LIST / DATALIST -------------------- */
-
   const movieNames = Array.isArray(window.MOVIE_NAMES) ? window.MOVIE_NAMES : [];
   const datalist = document.getElementById("movies");
 
@@ -29,7 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* -------------------- COUNTER BUTTONS -------------------- */
-
   if (decrease) {
     decrease.addEventListener("click", () => {
       numInput.value = Math.max(
@@ -49,7 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* -------------------- API CALL -------------------- */
-
   async function askRecommend() {
     const movie = (movieInput.value || movieInput.placeholder || "").trim();
     if (!movie) {
@@ -80,8 +80,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* -------------------- RENDERING -------------------- */
+  /* -------------------- MODAL ELEMENTS -------------------- */
+  const modal = document.getElementById("movie-modal");
+  const closeModal = document.querySelector(".close-modal");
 
+  // Elements to populate
+  const modalImg = document.getElementById("modal-img");
+  const modalTitle = document.getElementById("modal-title");
+  const modalDesc = document.getElementById("modal-desc");
+  const modalRating = document.getElementById("modal-rating");
+  const modalDate = document.getElementById("modal-date");
+  const modalRuntime = document.getElementById("modal-runtime");
+  const modalGenres = document.getElementById("modal-genres");
+
+  // Close Logic
+  if (closeModal) {
+    closeModal.onclick = () => { modal.style.display = "none"; };
+  }
+  window.onclick = (e) => {
+    if (e.target === modal) { modal.style.display = "none"; }
+  };
+
+  /* -------------------- RENDERING -------------------- */
   const SVG_FALLBACK =
     "data:image/svg+xml;utf8," +
     encodeURIComponent(
@@ -104,38 +124,58 @@ document.addEventListener("DOMContentLoaded", () => {
     div.className = "error";
     div.textContent = `Error: ${msg}`;
     grid.appendChild(div);
+    
+    // Reset title on error
+    if (recoTitle) {
+        recoTitle.textContent = "Error";
+        recoTitle.classList.remove("pulse");
+    }
   }
 
   function renderRecommendations(items, movieName) {
     clearGrid();
 
-    if (recoTitleSpan && movieName) {
-      recoTitleSpan.textContent = movieName;
+    // 1. RESTORE TITLE STRUCTURE
+    if (recoTitle) {
+        recoTitle.classList.remove("pulse");
+        // We inject the <span> back into the H2 so styling is preserved
+        recoTitle.innerHTML = `Recommendations for <span>${movieName}</span>`;
     }
 
-    if (!Array.isArray(items) || items.length === 0) {
-      const empty = document.createElement("div");
-      empty.className = "empty";
-      empty.textContent = "No recommendations found.";
-      grid.appendChild(empty);
+   if (!Array.isArray(items) || items.length === 0) {
+      grid.innerHTML = '<div class="empty">No recommendations found.</div>';
       return;
     }
-
     items.forEach((it) => {
       const card = document.createElement("div");
       card.className = "movie-card";
 
+      // --- CLICK EVENT: OPEN MODAL ---
+      card.addEventListener("click", () => {
+        // 1. Fill Data
+        modalTitle.textContent = it.title || "Unknown";
+        modalDesc.textContent = it.overview || "No description available.";
+        modalImg.src = it.poster || SVG_FALLBACK;
+        
+        // 2. Fill Badges (New API Data)
+        modalRating.textContent = `★ ${it.rating || 'N/A'}`;
+        modalDate.textContent = it.date || 'N/A';
+        modalRuntime.textContent = it.runtime || 'N/A';
+        modalGenres.textContent = it.genres || 'Unknown Genre';
+
+        // 3. Show Modal
+        modal.style.display = "block";
+      });
+
+      // --- CREATE CARD CONTENT ---
       const posterWrap = document.createElement("div");
       posterWrap.className = "poster-wrapper";
 
       const img = document.createElement("img");
       img.src = it.poster || SVG_FALLBACK;
-      img.alt = it.title || "Poster";
+      img.alt = it.title;
       img.loading = "lazy";
-      img.onerror = () => {
-        img.onerror = null;
-        img.src = SVG_FALLBACK;
-      };
+      img.onerror = () => { img.src = SVG_FALLBACK; };
 
       posterWrap.appendChild(img);
 
@@ -150,29 +190,39 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* -------------------- BUTTON + ENTER KEY -------------------- */
-
+  /* -------------------- BUTTON CLICK LOGIC -------------------- */
   btn.addEventListener("click", async () => {
-    const prevText = btn.textContent;
+    // 1. Button Loading State
     btn.disabled = true;
-    btn.textContent = "Loading...";
-
-    const res = await askRecommend();
-
-    if (res.ok) {
-      renderRecommendations(
-        res.data,
-        (movieInput.value || movieInput.placeholder || "").trim()
-      );
-    } else {
-      console.error("Server error", res.status, res.data);
-      const msg =
-        res.data?.Error || res.data?.error || "Server error"; // handle both keys
-      showError(msg);
+    btn.innerHTML = '<span class="loader"></span>'; 
+    
+    // 2. Title Loading State (REPLACES "Recommendations for...")
+    if (recoTitle) {
+        recoTitle.textContent = "Looking for recommendations...";
+        recoTitle.classList.add("pulse");
     }
 
-    btn.disabled = false;
-    btn.textContent = prevText;
+    try {
+      const res = await askRecommend();
+
+      if (res.ok) {
+        renderRecommendations(
+          res.data,
+          (movieInput.value || movieInput.placeholder || "").trim()
+        );
+      } else {
+        console.error("Server error", res.status, res.data);
+        const msg = res.data?.Error || res.data?.error || "Server error";
+        showError(msg);
+      }
+    } catch (e) {
+      console.error("Unexpected error:", e);
+      showError("Something went wrong.");
+    } finally {
+      // 3. Reset Button State
+      btn.disabled = false;
+      btn.textContent = "Recommend";
+    }
   });
 
   movieInput.addEventListener("keydown", (ev) => {
@@ -182,7 +232,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // optional: expose for console testing
   window.askRecommend = askRecommend;
-  window.renderRecommendations = renderRecommendations;
 });

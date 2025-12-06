@@ -12,21 +12,23 @@
       <h1 class="main-heading">Movie Recommendation System</h1>
 
       <section class="search-card">
+        
         <div class="field-group">
           <label for="movie-input">Search a movie</label>
           <input
             id="movie-input"
             type="text"
-            placeholder="Movie Name"
+            placeholder="e.g. The Dark Knight"
             class="text-input"
+            list="movies"
           />
+          <datalist id="movies"></datalist>
         </div>
 
         <div class="field-group number-group">
-          <label for="movie-count">Number</label>
+          <label for="movie-count">Number of recommendations</label>
           <div class="number-control">
             <button id="decrease" type="button" class="counter-btn">−</button>
-
             <input
               id="movie-count"
               type="number"
@@ -35,8 +37,8 @@
               value="5"
               step="1"
               class="number-input"
+              readonly
             />
-
             <button id="increase" type="button" class="counter-btn">+</button>
           </div>
         </div>
@@ -44,6 +46,7 @@
         <button id="recommend" class="btn-primary" type="button">
           Recommend
         </button>
+        
       </section>
 
   <section class="recommendations" id="recommendations">
@@ -54,6 +57,35 @@
   <!-- grid container for cards -->
   <div class="cards-grid" id="cards-grid"></div>
   </section>
+
+  <div id="movie-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      
+      <div class="modal-body">
+        <div class="modal-poster">
+          <img id="modal-img" src="" alt="Movie Poster">
+        </div>
+        
+        <div class="modal-info">
+          <h2 id="modal-title">Movie Title</h2>
+          
+          <div class="modal-meta">
+            <span id="modal-rating" class="meta-badge star">★ 0.0</span>
+            <span id="modal-date" class="meta-badge">Year</span>
+            <span id="modal-runtime" class="meta-badge">0h 00m</span>
+          </div>
+          
+          <p id="modal-genres" class="meta-genres">Genres</p>
+
+          <hr class="modal-divider">
+
+          <h3 class="modal-overview-header">Overview</h3>
+          <p id="modal-desc">Movie description...</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
     // movies available to client-side JS

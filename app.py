@@ -35,12 +35,27 @@ def recommneder_endpoint():
     if not movie_name:
         return jsonify({'Error':'Enter a valid movie name'}) , 400
     
-    titles, posters= recommend_top10(movie_name)
-    n= min(len(titles) , len(posters), count)
+    titles, details= recommend_top10(movie_name)
+    
+    if not titles:
+        return jsonify({'Error': 'Movie not found in database'}), 404
+    n= min(len(titles) , len(details), count)
     # Ensures we only return the user-requested number.
     result=[]
     for i in range(n):
-        result.append({'title':titles[i] , 'poster': posters[i]})
+        # Handle case where API might fail (None)
+        movie_data = details[i] if details[i] else {}
+        
+        result.append({
+            'title': titles[i],
+            'poster': movie_data.get('poster'),
+            'overview': movie_data.get('overview'),
+            'rating': movie_data.get('rating'),
+            'date': movie_data.get('date'),
+            'runtime': movie_data.get('runtime'),
+            'genres': movie_data.get('genres')
+        })
+        
     return jsonify(result)
 
 
