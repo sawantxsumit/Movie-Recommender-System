@@ -20,7 +20,7 @@ The modern front-end allows users to search case-insensitively and provides rich
 | **Efficient Model Handling** | Uses `similarity.pkl` (Cosine Similarity matrix) and `movies.pkl` (DataFrame) for fast, low-latency recommendations. |
 | **Live Details Modal** | Clicking any poster opens a detailed modal with real-time data fetched from TMDB, including **Release Date**, **Runtime**, **Rating**, and **Overview**. |
 | **Case-Insensitive Search** | Users can search for movie titles in any case (e.g., "batman" works for "Batman"). |
-| **Modern UI/UX** | Built with high-contrast, dark-mode CSS and includes a loading spinner/text for a smooth user experience. |
+| **Modern UI/UX** | Built with high-contrast, dark-mode CSS and ensures a smooth user experience. |
 
 ---
 
@@ -47,6 +47,48 @@ Follow these steps to set up and run the project locally.
 
 ### 1. Clone the Repository
 
-```bash
-git clone [YOUR GITHUB REPO URL]
-cd [REPO FOLDER NAME]
+git clone https://github.com/sawantxsumit/Movie-Recommender-System
+
+### 2. Create and Activate Virtual Environment
+
+python -m venv venv
+# On Windows:
+.\venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+### 3. Install Dependencies
+Install the necessary Python packages using the provided requirements.txt:
+
+pip install -r requirements.txt
+
+### 4. Configure API Key (Crucial!)
+For the app to fetch movie posters and details, you must set your TMDB API Key as an environment variable.
+
+Linux/macOS:
+export TMDB_API_KEY='YOUR_TMDB_API_KEY'
+
+Windows (Command Prompt):
+set TMDB_API_KEY=YOUR_TMDB_API_KEY
+
+### 5. Run the Application
+Start the Flask development server:
+python app.py
+
+The application will be available at: http://127.0.0.1:5000/
+
+## 📂 Project Structure
+.
+├── app.py                      # Main Flask application.
+├── movie_recommeder.py         # Core recommendation and API fetching logic.
+├── requirements.txt            # Python dependencies (Flask, scikit-learn, etc.).
+├── model/
+│   ├── movies.pkl              # Pre-processed movie data (title, tags, etc.).
+│   └── similarity.pkl          # Cosine Similarity matrix (The ML model).
+├── notebooks/
+│   └── model_traning.ipynb     # Jupyter Notebook detailing data cleaning and model creation.
+├── templates/
+│   └── index.html              # Frontend HTML structure.
+└── static/
+    ├── style.css               # All custom CSS for the modern UI/UX.
+    └── script.js               # Client-side logic for search, UI, and modal handling.
