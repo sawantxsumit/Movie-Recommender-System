@@ -1,5 +1,10 @@
 import pickle
 import requests
+import os
+
+API_KEY= os.environ.get('TMDB_API_KEY')
+if not API_KEY:
+    print("Error: TMDB_API_KEY environment variable not set.")
 
 movies=pickle.load(open('model/movies.pkl','rb'))
 similarity=pickle.load(open('model/similarity.pkl', 'rb'))
@@ -42,7 +47,7 @@ def fetch_movie_details(movie_id):
     This function takes movie_id and returns a dictionary of details 
     (poster, overview, rating, genres, etc.) matching your existing logic.
     '''
-    url = f'https://api.themoviedb.org/3/movie/{movie_id}?api_key=66e83890e4e9117150ef58f81296e512&language=en-US'
+    url = f'https://api.themoviedb.org/3/movie/{movie_id}?api_key={API_KEY}&language=en-US'
     response = requests.get(url)
     
     if response.status_code == 200:
