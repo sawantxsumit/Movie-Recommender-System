@@ -52,9 +52,12 @@ git clone https://github.com/sawantxsumit/Movie-Recommender-System
 ### 2. Create and Activate Virtual Environment
 
 python -m venv venv
-# On Windows:
+**On Windows:**
+
 .\venv\Scripts\activate
-# On macOS/Linux:
+
+**On macOS/Linux:**
+
 source venv/bin/activate
 
 ### 3. Install Dependencies
@@ -65,30 +68,45 @@ pip install -r requirements.txt
 ### 4. Configure API Key (Crucial!)
 For the app to fetch movie posters and details, you must set your TMDB API Key as an environment variable.
 
-Linux/macOS:
+**Linux/macOS:**
+
 export TMDB_API_KEY='YOUR_TMDB_API_KEY'
 
-Windows (Command Prompt):
+**Windows (Command Prompt):**
+
 set TMDB_API_KEY=YOUR_TMDB_API_KEY
 
 ### 5. Run the Application
 Start the Flask development server:
+
 python app.py
 
 The application will be available at: http://127.0.0.1:5000/
 
+## 🛠️ Deployment
+The application is deployed on Render using the configuration below:
+
+**Runtime:** Python 3
+
+**Build Command:** pip install -r requirements.txt
+
+**Start Command:** gunicorn app:app
+
+**Environment Variables:** TMDB_API_KEY (set securely on the platform)
+
 ## 📂 Project Structure
+```text
 .
-├── app.py                      # Main Flask application.
-├── movie_recommeder.py         # Core recommendation and API fetching logic.
-├── requirements.txt            # Python dependencies (Flask, scikit-learn, etc.).
-├── model/
-│   ├── movies.pkl              # Pre-processed movie data (title, tags, etc.).
-│   └── similarity.pkl          # Cosine Similarity matrix (The ML model).
+├── app.py                  # Main Flask application.
+├── movie_recommeder.py     # Core recommendation and API fetching logic.
+├── requirements.txt        # Python dependencies (Flask, scikit-learn, etc.).
+├── model/                  
+│   ├── movies.pkl          # Pre-processed movie data (title, tags, etc.).
+│   └── similarity.pkl      # Cosine Similarity matrix (The ML model).
 ├── notebooks/
-│   └── model_traning.ipynb     # Jupyter Notebook detailing data cleaning and model creation.
+│   └── model_traning.ipynb # Jupyter Notebook detailing data cleaning and modeling.
 ├── templates/
-│   └── index.html              # Frontend HTML structure.
+│   └── index.html          # Frontend HTML structure.
 └── static/
-    ├── style.css               # All custom CSS for the modern UI/UX.
-    └── script.js               # Client-side logic for search, UI, and modal handling.
+    ├── style.css           # Client-side CSS for the modern UI/UX.
+    └── script.js           # Client-side logic for search, UI, and modal handling. 
