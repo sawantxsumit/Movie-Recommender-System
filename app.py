@@ -1,5 +1,6 @@
 from flask import Flask , render_template , request, redirect , url_for , jsonify
 import pickle
+import os
 from movie_recommeder import recommend_top10
 
 app= Flask(__name__)
@@ -68,6 +69,10 @@ def search_movies():
     matches = [m for m in movies_list if m.lower().startswith(q)][:50]
     return jsonify(matches)
 
-    
+@app.route('/health-check')
+def health_check():
+    return jsonify({'status': 'ok'}), 200
+
 if __name__=='__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port)

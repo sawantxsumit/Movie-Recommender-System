@@ -5,6 +5,8 @@ import os
 API_KEY= os.environ.get('TMDB_API_KEY')
 if not API_KEY:
     print("Error: TMDB_API_KEY environment variable not set.")
+else:
+    print("TMDB_API_KEY loaded successfully.")
 
 movies=pickle.load(open('model/movies.pkl','rb'))
 similarity=pickle.load(open('model/similarity.pkl', 'rb'))
@@ -48,7 +50,7 @@ def fetch_movie_details(movie_id):
     (poster, overview, rating, genres, etc.) matching your existing logic.
     '''
     url = f'https://api.themoviedb.org/3/movie/{movie_id}?api_key={API_KEY}&language=en-US'
-    response = requests.get(url)
+    response = requests.get(url,timeout=10)
     
     if response.status_code == 200:
         data = response.json()
